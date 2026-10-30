@@ -1,25 +1,91 @@
-[gd_scene load_steps=4 format=3 uid="uid://cj7jxqkrjb0vr"]
+[gd_scene load_steps=12 format=3 uid="uid://cj7jxqkrjb0vr"]
 
 [ext_resource type="PackedScene" uid="uid://dsdnhr36p00as" path="res://player.tscn" id="1_f3sb7"]
+[ext_resource type="Material" uid="uid://cvv043dvobvkl" path="res://new_standard_material_3d.tres" id="3_036b0"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_aqk2v"]
+sky_top_color = Color(0.655089, 0.71397, 0.796066, 1)
+sky_horizon_color = Color(0.753196, 0.767916, 0.78844, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.753196, 0.767916, 0.78844, 1)
+energy_multiplier = 0.8
+
+[sub_resource type="Sky" id="Sky_036b0"]
+sky_material = SubResource("ProceduralSkyMaterial_aqk2v")
+
+[sub_resource type="Environment" id="Environment_dwbse"]
+background_mode = 2
+sky = SubResource("Sky_036b0")
+tonemap_mode = 2
+glow_enabled = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_f3sb7"]
-size = Vector3(10, 0.5, 10)
+size = Vector3(1000, 0.1, 1000)
 
-[sub_resource type="BoxMesh" id="BoxMesh_fj7yv"]
-size = Vector3(10, 0.5, 10)
+[sub_resource type="PlaneMesh" id="PlaneMesh_tlwt5"]
+material = ExtResource("3_036b0")
+size = Vector2(1000, 1000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fj7yv"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tlwt5"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="Curve3D" id="Curve3D_fj7yv"]
+closed = true
+bake_interval = 301.0
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 52.7634, 4.86374e-05, 1.83791, 0, 0, 0, 0, 0, 0, 80.2261, 0.132327, 103.485, 0, 0, 0, 0, 0, 0, -32.401, -0.198575, 132.413, 0, 0, 0, 0, 0, 0, -29.1043, 0.115283, 32.3309, 0, 0, 0, 0, 0, 0, -87.5673, -0.0760469, -34.1773, 0, 0, 0, 0, 0, 0, -17.6303, 0.207141, -138.994, 0, 0, 0, 0, 0, 0, -12.4546, -0.0791903, -50.0049, 0, 0, 0, 0, 0, 0, 62.9303, 0.0768156, -72.9474),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_fj7yv"]
+top_radius = 0.25
+bottom_radius = 0.25
 
 [node name="Node3D" type="Node3D"]
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_dwbse")
+
 [node name="Player" parent="." instance=ExtResource("1_f3sb7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5909, 0)
+platform_on_leave = 2
 
-[node name="Train" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.79395, 0)
+[node name="world" type="StaticBody3D" parent="."]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Train"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="world"]
 shape = SubResource("BoxShape3D_f3sb7")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Train"]
-mesh = SubResource("BoxMesh_fj7yv")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="world"]
+material_override = ExtResource("3_036b0")
+mesh = SubResource("PlaneMesh_tlwt5")
+
+[node name="locomotive" type="AnimatableBody3D" parent="world"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.6622, 4.89367, 0)
+top_level = true
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="world/locomotive"]
+shape = SubResource("BoxShape3D_fj7yv")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="world/locomotive"]
+mesh = SubResource("BoxMesh_tlwt5")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+
+[node name="Path3D" type="Path3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+curve = SubResource("Curve3D_fj7yv")
+
+[node name="frontwheels" type="PathFollow3D" parent="Path3D"]
+transform = Transform3D(-0.965385, -0.000327679, -0.260825, 0, 1.00001, -0.0012563, 0.260825, -0.00121283, -0.965384, 52.7634, 4.86374e-05, 1.83791)
+rotation_order = 0
+rotation_mode = 4
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Path3D/frontwheels"]
+transform = Transform3D(-4.37114e-08, -1, 0, -4.37114e-08, 1.91069e-15, -1, 1, -4.37114e-08, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_fj7yv")

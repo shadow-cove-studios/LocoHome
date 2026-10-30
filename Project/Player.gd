@@ -8,7 +8,7 @@ const sensitivity = 0.003
 var direction = 0.0
 var movementVector = 0
 var lookVector = 0
-var speed = 10
+var speed = 15
 func _unhandled_input(event):
 	if event is InputEventMouseMotion and captureMouse:
 		head.rotate_y(-event.relative.x * sensitivity)
@@ -41,4 +41,5 @@ func _physics_process(delta: float) -> void:
 		velocity.y = jumpForce
 	if Input.is_action_pressed("forward"):
 		pass
+	
 	move_and_slide()

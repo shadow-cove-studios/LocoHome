@@ -1,0 +1,10 @@
+[gd_resource type="ORMMaterial3D" load_steps=2 format=3 uid="uid://jgp0ntapstc8"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7gilr"]
+load_path = "res://.godot/imported/tiletest.png-6ae388d3c221592bed54880e9bc1b9e8.s3tc.ctex"
+
+[resource]
+albedo_texture = SubResource("CompressedTexture2D_7gilr")
+albedo_texture_force_srgb = true
+uv1_scale = Vector3(4, 4, 4)
+uv2_scale = Vector3(4, 4, 4)
